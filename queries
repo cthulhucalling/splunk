@@ -1,0 +1,2 @@
+List all indexes:
+     | eventcount summarize=false index=* index=_* | dedup index | fields index
