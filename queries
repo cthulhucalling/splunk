@@ -8,5 +8,4 @@ Firewall log query for portscanners (CIM compliant)
      | stats dc(dest_port) as "Port Count" by src
      | iplocation src
      | sort - "Port Count"
-     | head 10
-     | table src, City, Country, "Port Count"
+     | fields - lat lon
