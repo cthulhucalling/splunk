@@ -4,7 +4,7 @@ List all indexes:
 Firewall log query for portscanners (CIM compliant)
      earliest=-1h index=<firewall index> sourcetype=<firewall>
      | fields src, dest_port
-     | where (NOT cidrmatch("10.0.0.0/8",src) AND NOT cidrmatch("192.168.0.0/16",src) AND NOT cidrmatch("172.16.0.0/20",src))
+     | where (NOT cidrmatch("10.0.0.0/8",src) AND NOT cidrmatch("192.168.0.0/16",src) AND NOT cidrmatch("172.16.0.0/12",src))
      | stats dc(dest_port) as "Port Count" by src
      | iplocation src
      | sort - "Port Count"
