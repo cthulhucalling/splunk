@@ -1,2 +1,12 @@
 List all indexes:
      | eventcount summarize=false index=* index=_* | dedup index | fields index
+
+Firewall log query for portscanners
+     earliest=-1h index=<firewall index> sourcetype=<firewall>
+     | fields src, d_port
+     | where (NOT cidrmatch("10.0.0.0/8",src) AND NOT cidrmatch("192.168.0.0/16",src) AND NOT cidrmatch("172.16.0.0/20",src))
+     | stats dc(d_port) as "Port Count" by src
+     | iplocation src
+     | sort - "Port Count"
+     | head 10
+     | table src, City, Country, "Port Count"
