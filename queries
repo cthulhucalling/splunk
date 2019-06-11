@@ -1,11 +1,29 @@
 List all indexes:
      | eventcount summarize=false index=* index=_* | dedup index | fields index
 
+Macro for filtering out internal addresses (FilterOutInternal):
+     where (NOT cidrmatch("10.0.0.0/8",src) AND NOT cidrmatch("192.168.0.0/16",src) AND NOT cidrmatch("172.16.0.0/12",src))
+
 Firewall log query for portscanners (CIM compliant)
      earliest=-1h index=<firewall index> sourcetype=<firewall>
      | fields src, dest_port
-     | where (NOT cidrmatch("10.0.0.0/8",src) AND NOT cidrmatch("192.168.0.0/16",src) AND NOT cidrmatch("172.16.0.0/12",src))
+     | `FilterOutInternal`
      | stats dc(dest_port) as "Port Count" by src
      | iplocation src
      | sort - "Port Count"
      | fields - lat lon
+
+404 requests
+     earliest=-1h index=<web logs> sc_status=404
+     | `FilterOutInternal` AND NOT src IN ("::1","127.0.0.1")
+     | stats count by src
+     | sort - count
+  A high number of 404 requests in an hour could indicate reconnaissance
+     
+Failed logins
+     earliest=-1h index=<windows event log> source=<source> EventCode=4625
+     | where NOT LIKE(Account_Name,"%$") AND NOT Account_Name IN ("-","")
+     | stats count by Account_Name
+     | sort - count
+     | head 10
+  A high number of failed logins in a short time could indicate bruteforce attacks
