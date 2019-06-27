@@ -29,6 +29,8 @@ Failed logins
   A high number of failed logins in a short time could indicate bruteforce attacks
 
 Poor man's WAF
+   Requires using the web_attacks CSV file as a lookup
+   Also requires enabling wildcards on that lookup
      earliest=-1d index=web
          [| inputlookup web_attacks
          | fields uri_path]
