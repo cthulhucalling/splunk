@@ -1,0 +1,3 @@
+uri_path, description
+*etc/passwd*, Passwd file access attempt
+*/phpadmin*, PHPAdmin access attempt
