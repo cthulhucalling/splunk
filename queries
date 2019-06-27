@@ -27,3 +27,11 @@ Failed logins
      | sort - count
      | head 10
   A high number of failed logins in a short time could indicate bruteforce attacks
+
+Poor man's WAF
+     earliest=-1d index=web
+         [| inputlookup web_attacks
+         | fields uri_path]
+     | lookup web_attacks uri_path OUTPUT description
+     | `FilterOutInternal`
+     | stats count by description src
