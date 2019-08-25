@@ -1,0 +1,25 @@
+#!/usr/bin/python
+
+import csv
+import sys
+import socket
+
+ip=sys.argv[1]
+host=sys.argv[2]
+
+infile=sys.stdin
+outfile=sys.stdout
+
+a=csv.DictReader(infile)
+
+b=csv.DictWriter(outfile,fieldnames=a.fieldnames)
+b.writeheader()
+
+for row in a:
+        try:
+                hostname=socket.gethostbyaddr(row[ip])
+                row[host]=hostname[0]
+                b.writerow(row)
+        except:
+                row[host]="no record found"
+                b.writerow(row)
