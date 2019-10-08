@@ -37,3 +37,8 @@ Poor man's WAF
      | lookup web_attacks uri_path OUTPUT description
      | `FilterOutInternal`
      | stats count by description src
+
+Who's touching ports, groups by IP address
+     index="palo_alto" earliest=-24h
+     | stats values(src_ip) by dest_port
+     | rename dest_port as "Destination Port", values(src_ip) as "IP addresses"
