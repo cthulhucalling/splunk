@@ -42,3 +42,10 @@ Who's touching ports, groups by IP address
      index="palo_alto" earliest=-24h
      | stats values(src_ip) by dest_port
      | rename dest_port as "Destination Port", values(src_ip) as "IP addresses"
+     
+Parse Zeek conn.log, look for long connections. This will also sum multiple src->dest pairs
+     index="zeek"
+     |dedup id_orig_h,id_resp_h
+     |map search="search index=zeek id_orig_h=$id_orig_h$ id_resp_h=$id_resp_h$|stats sum(duration) as TotalTime by id_orig_h, id_resp_h" maxsearches=100
+     | table id_orig_h, id_resp_h, TotalTime
+     | sort - TotalTime
